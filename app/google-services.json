@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "467984530426",
+    "firebase_url": "https://gym-management-5647c.firebaseio.com",
+    "project_id": "gym-management-5647c",
+    "storage_bucket": "gym-management-5647c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467984530426:android:bd802fedd403b25d00c243",
+        "android_client_info": {
+          "package_name": "com.example.android.fitness"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467984530426-16jve3soefbija3b3226ojrr02i6vq9e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.fitness",
+            "certificate_hash": "84511a1c4cebe6ed8de7367625c7fc4aaaf1653f"
+          }
+        },
+        {
+          "client_id": "467984530426-69p9ah8inaao4qu2leg4478pt7u34353.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuTWUB-HhtRchN9LTMG4N1w39XL0BEHBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467984530426-69p9ah8inaao4qu2leg4478pt7u34353.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
