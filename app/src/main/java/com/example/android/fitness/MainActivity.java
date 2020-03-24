@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     CollectionReference usersRef = db.collection("users");
     private double bmi;
     private static DecimalFormat df = new DecimalFormat("0.0");
+    private Button mButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         mBmiTextView = (TextView) findViewById(R.id.bmi);
         lottieAnimationView = (LottieAnimationView)findViewById(R.id.exercise);
         mWeightTextView = (TextView)findViewById(R.id.weight);
+        mButton = (Button)findViewById(R.id.image_button);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -86,7 +88,12 @@ public class MainActivity extends AppCompatActivity {
              }
             }
         };
-
+       mButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               startActivity(new Intent(MainActivity.this,ImageActivity.class));
+           }
+       });
 
     }
     @Override

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ImageActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00502C2C"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/equipment_image"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:scaleType="centerCrop" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/image_loader"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="image.json"
+                app:lottie_loop="true" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/work_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="30dp"
+            android:background="#000000"
+            android:fontFamily="@font/cairo_light"
+            android:text="Elliptical"
+            android:textAlignment="center"
+            android:textColor="#FDFDFD"
+            android:textSize="45sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:text="TIME REQUIRED: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/time_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:text="20 Minutes"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:text="TARGET MUSCLES: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/target_muscle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:text="glutes, quadriceps, hamstrings, calves, and anterior tibialis"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#000000" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="An elliptical trainer or cross-trainer (X-trainer) is a stationary exercise machine which you can use for stair climbing, walking, running, or sprinting exercises. It can be a great, low-impact cardio that burns calories. Like any exercise machine, proper use is essential to getting the most effective workout and avoiding injury."
+            android:fontFamily="sans-serif-medium"
+            android:gravity="left"
+            android:textColor="#775c60"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:cardCornerRadius="3dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:id="@+id/card_benefits">
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="vertical"
+               android:animateLayoutChanges="true">
+
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent">
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Benefits of this exercise"
+                       android:textSize="25sp"
+                       android:layout_marginLeft="35dp"
+                       android:paddingTop="20dp"
+                       android:paddingBottom="20dp"
+                       android:id="@+id/relative_text"/>
+
+                   <ImageView
+                       android:id="@+id/expand"
+                       android:layout_width="56dp"
+                       android:layout_height="56dp"
+                       android:layout_toRightOf="@id/relative_text"
+                       android:src="@drawable/expand_more"
+                       android:layout_marginTop="6dp"
+                       android:layout_marginLeft="10dp"/>
+               </RelativeLayout>
+
+
+               <!--TextView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:text="1. Can Aid Weight Loss\n2. Low-Impact Exercise\n3.Tones The Entire Body\n4. Boosts Cardiovascular Health\n5. Improves Cardio Stamina\n6. Reduces High Blood Pressure\n7. Improves Balance And Mobility\n8. Improves Blood Circulation"
+                   android:textSize="15sp"
+                   android:paddingTop="20dp"
+                   android:paddingBottom="20dp"
+                   android:textAlignment="center"
+                   android:visibility="gone"
+                   android:id="@+id/benefits"/-->
+               <com.example.android.fitness.NonScrollListView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/list_view"
+                   android:visibility="gone"/>
+
+
+           </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Here's a video description : "
+            android:textAlignment="center"
+            android:textSize="30sp" />
+
+
+        <!--com.airbnb.lottie.LottieAnimationView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            app:lottie_fileName="benefits.json"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"/-->
+
+
+        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+            android:id="@+id/youtube_player_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="36dp"
+            app:autoPlay="false"
+            app:showFullScreenButton="false"
+            app:videoId="E15Q3Z9J-Zg" />
+    </LinearLayout>
+</ScrollView>
