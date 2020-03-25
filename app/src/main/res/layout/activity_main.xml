@@ -35,11 +35,12 @@
         android:textColor="#EAB543"
         android:id="@+id/weight"/>
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="image"
+        android:text="Check out recommended workouts"
+        android:gravity="center"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:id="@+id/image_button"/>
-
-
 
 </LinearLayout>

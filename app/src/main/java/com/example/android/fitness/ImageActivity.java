@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
@@ -26,22 +28,47 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ImageActivity extends AppCompatActivity {
 
-    private ImageView mImageView;
-    private LottieAnimationView lottieAnimationView;
+    private ImageView mOnlineImageView;
+    private LottieAnimationView loadingIndicator;
     private CardView mCardView;
-    //private TextView mTextView;
     private ListView mListView;
     private ImageView mExpandImageView;
-    ArrayAdapter<String> adapter;
+    private TextView mTitleText;
+    private TextView mTimeText;
+    private TextView mTargetMusclesText;
+    private TextView mDescriptionText;
+    private ArrayAdapter<String> adapter;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference collectionReference;
+    DocumentReference documentReference;
+    YouTubePlayerView youTubePlayerView;
+
+    private ArrayList<String> benefits;
+    private String imageUrl ;
+    private String videoUrl ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,56 +79,93 @@ public class ImageActivity extends AppCompatActivity {
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
-        mImageView = (ImageView)findViewById(R.id.equipment_image);
-        lottieAnimationView= (LottieAnimationView)findViewById(R.id.image_loader);
+        mOnlineImageView = (ImageView)findViewById(R.id.online_image);
+        loadingIndicator = (LottieAnimationView)findViewById(R.id.loading_indicator);
         mCardView = (CardView)findViewById(R.id.card_benefits);
-        //mTextView = (TextView)findViewById(R.id.benefits);
         mListView = (ListView)findViewById(R.id.list_view);
         mExpandImageView = (ImageView)findViewById(R.id.expand);
+        mTitleText = (TextView)findViewById(R.id.title);
+        mTimeText = (TextView) findViewById(R.id.time);
+        mTargetMusclesText = (TextView)findViewById(R.id.target_muscles);
+        mDescriptionText = (TextView)findViewById(R.id.description);
+        youTubePlayerView = findViewById(R.id.youtube_player_view);
+        getLifecycle().addObserver(youTubePlayerView);
 
-        String imageUri = "https://firebasestorage.googleapis.com/v0/b/gym-management-5647c.appspot.com/o/exercises%2FElliptical.jpg?alt=media&token=d8a39916-7136-4fed-9b27-ff652e3706e8";
+        String title,exercise_type;
+        Intent intent = getIntent();
+        title = intent.getStringExtra("exercise_name");
+        exercise_type = intent.getStringExtra("exercise_type");
+        collectionReference = db.collection(exercise_type);
+        documentReference = collectionReference.document(title);
+        mTitleText.setText(title);
+        mCardView.setEnabled(false);
+        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(e != null)
+                {
+                    Toast.makeText(ImageActivity.this,"no internet connection",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (documentSnapshot.exists()) {
+                        mTimeText.setText(documentSnapshot.getString("time"));
+                        mTargetMusclesText.setText(documentSnapshot.getString("target_muscles"));
+                        mDescriptionText.setText(documentSnapshot.getString("description"));
+                        benefits = (ArrayList<String>) documentSnapshot.get("benefits");
+                        mCardView.setEnabled(true);
+                        imageUrl = documentSnapshot.getString("imageUrl");
+                        RequestOptions options = new RequestOptions()
+                                .centerCrop();
+                        Glide.with(ImageActivity.this)
+                                .load(imageUrl)
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        loadingIndicator.setVisibility(View.GONE);
+                                        Toast.makeText(ImageActivity.this,"error in loading image",Toast.LENGTH_SHORT).show();
+                                        return true;
+                                    }
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        loadingIndicator.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                })
+                                .apply(options)
+                                .into(mOnlineImageView);
+                        videoUrl = documentSnapshot.getString("videoUrl");
+                        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                            @Override
+                            public void onReady(@NotNull YouTubePlayer youTubePlayer) {
+                                youTubePlayer.loadVideo(videoUrl,0);
+                            }
+                        });
+                    }
+                }
+            }
+        });
 
-       /* Picasso.get().load(imageUri).fit().centerCrop()
+
+
+
+        /* Picasso.get().load(imageUrl).fit().centerCrop()
                 .placeholder(R.drawable.preloader)
                 .error(R.drawable.preloader)
-                .into(mImageView); */
-
-
-        YouTubePlayerView youTubePlayerView = findViewById(R.id.youtube_player_view);
-        getLifecycle().addObserver(youTubePlayerView);
+                .into(mOnlineImageView); */
 
         /*CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);
         circularProgressDrawable.setStrokeWidth(10f);
         circularProgressDrawable.setCenterRadius(60f);
         circularProgressDrawable.start();
         */
-
-        RequestOptions options = new RequestOptions()
-                .centerCrop();
-        Glide.with(this)
-                .load(imageUri)
-                .addListener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        lottieAnimationView.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .apply(options)
-                .into(mImageView);
-
         mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mListView.getVisibility()==View.GONE)
                 {
                     mListView.setVisibility(View.VISIBLE);
-                    populateListView();
+                    populateListView(benefits);
                     mExpandImageView.setImageResource(R.drawable.expand_less);
                 }
                 else if(mListView.getVisibility()==View.VISIBLE)
@@ -113,17 +177,9 @@ public class ImageActivity extends AppCompatActivity {
             }
         });
     }
-    void populateListView()
+    void populateListView(ArrayList<String> benefits)
     {
-        String []benefits = new String[5];
-        benefits[0]="1. Can Aid Weight Loss";
-        benefits[1]="2. Low-Impact Exercise";
-        benefits[2] = "3. Tones The Entire Body";
-        benefits[3] = "4. Boosts Cardiovascular Health";
-        benefits[4]= "5. Improves Cardio Stamina";
-
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,benefits);
-
         mListView.setAdapter(adapter);
     }
 }

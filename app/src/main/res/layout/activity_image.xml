@@ -18,22 +18,24 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/equipment_image"
+                android:id="@+id/online_image"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:scaleType="centerCrop" />
 
             <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/image_loader"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
+                android:layout_centerInParent="true"
+                app:lottie_fileName="benefits.json"
                 app:lottie_autoPlay="true"
-                app:lottie_fileName="image.json"
-                app:lottie_loop="true" />
+                app:lottie_loop="true"
+                android:id="@+id/loading_indicator"/>
+
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/work_out"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -62,14 +64,14 @@
                 android:textColor="#000000" />
 
             <TextView
-                android:id="@+id/time_text"
+                android:id="@+id/time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:text="20 Minutes"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#000000" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -88,85 +90,88 @@
                 android:textColor="#000000" />
 
             <TextView
-                android:id="@+id/target_muscle"
+                android:id="@+id/target_muscles"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:text="glutes, quadriceps, hamstrings, calves, and anterior tibialis"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#000000" />
+
         </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="30dp"
-            android:text="An elliptical trainer or cross-trainer (X-trainer) is a stationary exercise machine which you can use for stair climbing, walking, running, or sprinting exercises. It can be a great, low-impact cardio that burns calories. Like any exercise machine, proper use is essential to getting the most effective workout and avoiding injury."
+            android:layout_marginRight="16dp"
             android:fontFamily="sans-serif-medium"
             android:gravity="left"
-            android:textColor="#775c60"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
+            android:textColor="#775c60"
+            android:id="@+id/description"/>
+
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_benefits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="2dp"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="16dp"
-            app:cardCornerRadius="3dp"
             android:clickable="true"
+            android:elevation="2dp"
             android:focusable="true"
-            android:id="@+id/card_benefits">
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:orientation="vertical"
-               android:animateLayoutChanges="true">
+            app:cardCornerRadius="3dp">
 
-               <RelativeLayout
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent">
-                   <TextView
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:text="Benefits of this exercise"
-                       android:textSize="25sp"
-                       android:layout_marginLeft="35dp"
-                       android:paddingTop="20dp"
-                       android:paddingBottom="20dp"
-                       android:id="@+id/relative_text"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
 
-                   <ImageView
-                       android:id="@+id/expand"
-                       android:layout_width="56dp"
-                       android:layout_height="56dp"
-                       android:layout_toRightOf="@id/relative_text"
-                       android:src="@drawable/expand_more"
-                       android:layout_marginTop="6dp"
-                       android:layout_marginLeft="10dp"/>
-               </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
+                    <TextView
+                        android:id="@+id/relative_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="35dp"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="20dp"
+                        android:text="Benefits of this exercise"
+                        android:textSize="25sp" />
 
-               <!--TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:text="1. Can Aid Weight Loss\n2. Low-Impact Exercise\n3.Tones The Entire Body\n4. Boosts Cardiovascular Health\n5. Improves Cardio Stamina\n6. Reduces High Blood Pressure\n7. Improves Balance And Mobility\n8. Improves Blood Circulation"
-                   android:textSize="15sp"
-                   android:paddingTop="20dp"
-                   android:paddingBottom="20dp"
-                   android:textAlignment="center"
-                   android:visibility="gone"
-                   android:id="@+id/benefits"/-->
-               <com.example.android.fitness.NonScrollListView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:id="@+id/list_view"
-                   android:visibility="gone"/>
+                    <ImageView
+                        android:id="@+id/expand"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_toRightOf="@id/relative_text"
+                        android:src="@drawable/expand_more" />
 
+                </RelativeLayout>
 
-           </LinearLayout>
+                <!--TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1. Can Aid Weight Loss\n2. Low-Impact Exercise\n3.Tones The Entire Body\n4. Boosts Cardiovascular Health\n5. Improves Cardio Stamina\n6. Reduces High Blood Pressure\n7. Improves Balance And Mobility\n8. Improves Blood Circulation"
+                    android:textSize="15sp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:textAlignment="center"
+                    android:visibility="gone"
+                    android:id="@+id/benefits"/-->
+                <com.example.android.fitness.NonScrollListView
+                    android:id="@+id/list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
@@ -178,16 +183,12 @@
             android:text="Here's a video description : "
             android:textAlignment="center"
             android:textSize="30sp" />
-
-
         <!--com.airbnb.lottie.LottieAnimationView
             android:layout_width="match_parent"
             android:layout_height="300dp"
             app:lottie_fileName="benefits.json"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"/-->
-
-
         <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
             android:id="@+id/youtube_player_view"
             android:layout_width="match_parent"
@@ -195,7 +196,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="36dp"
             app:autoPlay="false"
-            app:showFullScreenButton="false"
-            app:videoId="E15Q3Z9J-Zg" />
+            app:showFullScreenButton="false" />
     </LinearLayout>
+
 </ScrollView>

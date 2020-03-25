@@ -44,4 +44,5 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:6.2.0'
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation 'com.tomer:fadingtextview:2.5'
 }

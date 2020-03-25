@@ -41,11 +41,11 @@ public class EditUserInfo extends AppCompatActivity {
     private static final String KEY_AGE = "age";
     private static final String KEY_HEIGHT = "height";
     private static final String KEY_WEIGHT = "weight";
-    private static final String KEY_CHEST_SIZE ="chest size";
+    private static final String KEY_CHEST_SIZE = "chest size";
     private static final String KEY_WAIST_SIZE = "waist size";
     private static final String KEY_BELLY_SIZE = "Belly size";
     private static final String KEY_THIGH_SIZE = "Thigh girth";
-    private static final String KEY_FIRST_TIME_SIGNIN  = "first_time_sign_in";
+    private static final String KEY_FIRST_TIME_SIGNIN = "first_time_sign_in";
 
     private int mGender = 1;
     private int mAge;
@@ -80,6 +80,7 @@ public class EditUserInfo extends AppCompatActivity {
     private CollectionReference mUsersData = db.collection("users");
     private DocumentReference mUserDb;
     private ListenerRegistration listenerRegistration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,54 +91,47 @@ public class EditUserInfo extends AppCompatActivity {
         mUserId = intent.getStringExtra("uid");
         mUserDb = mUsersData.document(mUserId);
 
-        mGenderSpinner = (Spinner)findViewById(R.id.spinner_gender);
+        mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
         mFab = (FloatingActionButton) findViewById(R.id.fab_next);
-        mAgeEditText = (EditText)findViewById(R.id.age_field);
-        mHeightEditText = (EditText)findViewById(R.id.height_field);
-        mWeightEditText = (EditText)findViewById(R.id.weight_field);
-        mChestEditText = (EditText)findViewById(R.id.chest_field);
-        mWaistEditText = (EditText)findViewById(R.id.waist_field);
-        mBellyEditText = (EditText)findViewById(R.id.belly_field);
-        mThighEditText = (EditText)findViewById(R.id.thigh_field);
+        mAgeEditText = (EditText) findViewById(R.id.age_field);
+        mHeightEditText = (EditText) findViewById(R.id.height_field);
+        mWeightEditText = (EditText) findViewById(R.id.weight_field);
+        mChestEditText = (EditText) findViewById(R.id.chest_field);
+        mWaistEditText = (EditText) findViewById(R.id.waist_field);
+        mBellyEditText = (EditText) findViewById(R.id.belly_field);
+        mThighEditText = (EditText) findViewById(R.id.thigh_field);
 
         listenerRegistration = mUserDb.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e){
-             if(e != null)
-                {
-                    Toast.makeText(EditUserInfo.this,"Error fetching database",Toast.LENGTH_SHORT);
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(EditUserInfo.this, "Error fetching database", Toast.LENGTH_SHORT);
+                } else {
+                    mGender = documentSnapshot.getDouble(KEY_GENDER) == 1 ? GENDER_MALE : GENDER_FEMALE;
+                    mGenderSpinner.setSelection(mGender - 1);
+                    double n = documentSnapshot.getDouble(KEY_HEIGHT);
+                    mHeightEditText.setText(String.valueOf((int) n));
+                    n = documentSnapshot.getDouble(KEY_WEIGHT);
+                    mWeightEditText.setText(String.valueOf((int) n));
+                    n = documentSnapshot.getDouble(KEY_AGE);
+                    mAgeEditText.setText(String.valueOf((int) n));
+                    if (documentSnapshot.getDouble(KEY_CHEST_SIZE) != 0) {
+                        n = documentSnapshot.getDouble(KEY_CHEST_SIZE);
+                        mChestEditText.setText(String.valueOf((int) n));
+                    }
+                    if (documentSnapshot.getDouble(KEY_WAIST_SIZE) != 0) {
+                        n = documentSnapshot.getDouble(KEY_WAIST_SIZE);
+                        mWaistEditText.setText(String.valueOf((int) n));
+                    }
+                    if (documentSnapshot.getDouble(KEY_BELLY_SIZE) != 0) {
+                        n = documentSnapshot.getDouble(KEY_BELLY_SIZE);
+                        mBellyEditText.setText(String.valueOf((int) n));
+                    }
+                    if (documentSnapshot.getDouble(KEY_THIGH_SIZE) != 0) {
+                        n = documentSnapshot.getDouble(KEY_THIGH_SIZE);
+                        mThighEditText.setText(String.valueOf((int) n));
+                    }
                 }
-             else
-             {
-                 mGender = documentSnapshot.getDouble(KEY_GENDER)==1?GENDER_MALE:GENDER_FEMALE;
-                 mGenderSpinner.setSelection(mGender-1);
-                 double n = documentSnapshot.getDouble(KEY_HEIGHT);
-                 mHeightEditText.setText(String.valueOf((int)n));
-                 n = documentSnapshot.getDouble(KEY_WEIGHT);
-                 mWeightEditText.setText(String.valueOf((int)n));
-                 n = documentSnapshot.getDouble(KEY_AGE);
-                 mAgeEditText.setText(String.valueOf((int)n));
-                 if(documentSnapshot.getDouble(KEY_CHEST_SIZE) != 0)
-                 {
-                     n = documentSnapshot.getDouble(KEY_CHEST_SIZE);
-                     mChestEditText.setText(String.valueOf((int)n));
-                 }
-                 if(documentSnapshot.getDouble(KEY_WAIST_SIZE) != 0)
-                 {
-                     n = documentSnapshot.getDouble(KEY_WAIST_SIZE);
-                     mWaistEditText.setText(String.valueOf((int)n));
-                 }
-                 if(documentSnapshot.getDouble(KEY_BELLY_SIZE) != 0)
-                 {
-                     n = documentSnapshot.getDouble(KEY_BELLY_SIZE);
-                     mBellyEditText.setText(String.valueOf((int)n));
-                 }
-                 if(documentSnapshot.getDouble(KEY_THIGH_SIZE) != 0)
-                 {
-                     n = documentSnapshot.getDouble(KEY_THIGH_SIZE);
-                     mThighEditText.setText(String.valueOf((int)n));
-                 }
-             }
             }
         });
         mFab.setEnabled(false);
@@ -156,20 +150,15 @@ public class EditUserInfo extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String ageInputString = mAgeEditText.getText().toString();
-                if(ageInputString.isEmpty()){
+                if (ageInputString.isEmpty()) {
                     mAgeEditText.setError("this is mandatory field");
                     mIsAgeValid = false;
-                }
-                else
-                {
+                } else {
                     int ageInputInteger = Integer.parseInt(mAgeEditText.getText().toString());
-                    if(ageInputInteger<10 || ageInputInteger>150)
-                    {
+                    if (ageInputInteger < 10 || ageInputInteger > 150) {
                         mAgeEditText.setError("Please enter a valid age");
                         mIsAgeValid = false;
-                    }
-                    else
-                    {
+                    } else {
                         mIsAgeValid = true;
                     }
 
@@ -190,18 +179,15 @@ public class EditUserInfo extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(mHeightEditText.getText().toString().isEmpty()){
+                if (mHeightEditText.getText().toString().isEmpty()) {
                     mHeightEditText.setError("this is mandatory field");
                     mIsHeightValid = false;
-                }
-                else{
+                } else {
                     int HeightInputInteger = Integer.parseInt(mHeightEditText.getText().toString());
-                    if(HeightInputInteger < 25 || HeightInputInteger > 300) {
+                    if (HeightInputInteger < 25 || HeightInputInteger > 300) {
                         mHeightEditText.setError("Please enter a valid Height");
                         mIsHeightValid = false;
-                    }
-                    else
-                    {
+                    } else {
                         mIsHeightValid = true;
                     }
                 }
@@ -222,18 +208,15 @@ public class EditUserInfo extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(mWeightEditText.getText().toString().isEmpty()){
+                if (mWeightEditText.getText().toString().isEmpty()) {
                     mWeightEditText.setError("this is mandatory field");
                     mIsWeightValid = false;
-                }
-                else {
+                } else {
                     int weightInputInteger = Integer.parseInt(mWeightEditText.getText().toString());
-                    if(weightInputInteger < 1 || weightInputInteger > 700) {
+                    if (weightInputInteger < 1 || weightInputInteger > 700) {
                         mWeightEditText.setError("Please enter a valid Height");
                         mIsWeightValid = false;
-                    }
-                    else
-                    {
+                    } else {
                         mIsWeightValid = true;
                     }
                 }
@@ -255,19 +238,14 @@ public class EditUserInfo extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(mChestEditText.getText().toString().isEmpty())
-                {
+                if (mChestEditText.getText().toString().isEmpty()) {
                     mIsChestValid = true;
-                }
-                else
-                {
+                } else {
                     int chestInputInteger = Integer.parseInt(mChestEditText.getText().toString());
-                    if(chestInputInteger < 10 || chestInputInteger > 300) {
+                    if (chestInputInteger < 10 || chestInputInteger > 300) {
                         mChestEditText.setError("Please enter a valid chest size");
                         mIsChestValid = false;
-                    }
-                    else
-                    {
+                    } else {
                         mIsChestValid = true;
                     }
                 }
@@ -283,18 +261,14 @@ public class EditUserInfo extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(mWaistEditText.getText().toString().isEmpty())
-                {
+                if (mWaistEditText.getText().toString().isEmpty()) {
                     mIsWaistValid = true;
-                }
-                else {
+                } else {
                     int waistInputInteger = Integer.parseInt(mWaistEditText.getText().toString());
-                    if(waistInputInteger < 10 || waistInputInteger > 150) {
+                    if (waistInputInteger < 10 || waistInputInteger > 150) {
                         mWaistEditText.setError("Please enter a valid waist");
                         mIsWaistValid = false;
-                    }
-                    else
-                    {
+                    } else {
                         mIsWaistValid = true;
                     }
                 }
@@ -320,18 +294,14 @@ public class EditUserInfo extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(mBellyEditText.getText().toString().isEmpty())
-                {
+                if (mBellyEditText.getText().toString().isEmpty()) {
                     mIsBellyValid = true;
-                }
-                else {
+                } else {
                     int bellyInputInteger = Integer.parseInt(mBellyEditText.getText().toString());
-                    if(bellyInputInteger < 10 || bellyInputInteger > 150) {
+                    if (bellyInputInteger < 10 || bellyInputInteger > 150) {
                         mBellyEditText.setError("Please enter a valid belly circumference");
                         mIsBellyValid = false;
-                    }
-                    else
-                    {
+                    } else {
                         mIsBellyValid = true;
                     }
                 }
@@ -351,18 +321,14 @@ public class EditUserInfo extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(mThighEditText.getText().toString().isEmpty()) {
+                if (mThighEditText.getText().toString().isEmpty()) {
                     mIsThighValid = true;
-                }
-                else
-                {
+                } else {
                     int thighInputInteger = Integer.parseInt(mThighEditText.getText().toString());
-                    if(thighInputInteger < 10 || thighInputInteger > 150) {
+                    if (thighInputInteger < 10 || thighInputInteger > 150) {
                         mThighEditText.setError("Please enter a valid age");
                         mIsThighValid = false;
-                    }
-                    else
-                    {
+                    } else {
                         mIsThighValid = true;
                     }
                 }
@@ -401,8 +367,7 @@ public class EditUserInfo extends AppCompatActivity {
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals("Male")) {
                         mGender = 1;
-                    }
-                    else {
+                    } else {
                         mGender = 2;
                     }
                 }
@@ -415,76 +380,60 @@ public class EditUserInfo extends AppCompatActivity {
         });
     }
 
-    private void checkFields()
-    {
-        if(mIsAgeValid&&mIsBellyValid&&mIsChestValid&&mIsHeightValid&&mIsThighValid&&mIsWaistValid&&mIsWeightValid)
-        {
+    private void checkFields() {
+        if (mIsAgeValid && mIsBellyValid && mIsChestValid && mIsHeightValid && mIsThighValid && mIsWaistValid && mIsWeightValid) {
             mFab.setEnabled(true);
-        }
-        else
-        {
+        } else {
             mFab.setEnabled(false);
         }
     }
 
-    private void attachTodatabase(){
+    private void attachTodatabase() {
         mAge = Integer.parseInt(mAgeEditText.getText().toString());
-        mHeight =Integer.parseInt(mHeightEditText.getText().toString());
+        mHeight = Integer.parseInt(mHeightEditText.getText().toString());
         mWeight = Integer.parseInt(mWeightEditText.getText().toString());
-        if(mChestEditText.getText().toString().isEmpty())
-        {
+        if (mChestEditText.getText().toString().isEmpty()) {
             mChestSize = 0;
-        }
-        else
-        {
+        } else {
             mChestSize = Integer.parseInt(mChestEditText.getText().toString());
         }
-        if(mWaistEditText.getText().toString().isEmpty())
-        {
+        if (mWaistEditText.getText().toString().isEmpty()) {
             mWaistSize = 0;
-        }
-        else
-        {
+        } else {
             mWaistSize = Integer.parseInt(mWaistEditText.getText().toString());
         }
-        if(mBellyEditText.getText().toString().isEmpty())
-        {
+        if (mBellyEditText.getText().toString().isEmpty()) {
             mBellyCirumference = 0;
-        }
-        else
-        {
+        } else {
             mBellyCirumference = Integer.parseInt(mBellyEditText.getText().toString());
         }
-        if(mThighEditText.getText().toString().isEmpty())
-        {
+        if (mThighEditText.getText().toString().isEmpty()) {
             mThighGirth = 0;
-        }
-        else
-        {
+        } else {
             mThighGirth = Integer.parseInt(mThighEditText.getText().toString());
         }
-        Map<String,Integer> userInfo = new HashMap<>();
-        userInfo.put(KEY_GENDER,mGender);
-        userInfo.put(KEY_AGE,mAge);
-        userInfo.put(KEY_HEIGHT,mHeight);
-        userInfo.put(KEY_WEIGHT,mWeight);
-        userInfo.put(KEY_CHEST_SIZE,mChestSize);
-        userInfo.put(KEY_WAIST_SIZE,mWaistSize);
-        userInfo.put(KEY_BELLY_SIZE,mBellyCirumference);
-        userInfo.put(KEY_THIGH_SIZE,mThighGirth);
-        userInfo.put(KEY_FIRST_TIME_SIGNIN,FIRST_TIME_SIGNIN);
+        Map<String, Integer> userInfo = new HashMap<>();
+        userInfo.put(KEY_GENDER, mGender);
+        userInfo.put(KEY_AGE, mAge);
+        userInfo.put(KEY_HEIGHT, mHeight);
+        userInfo.put(KEY_WEIGHT, mWeight);
+        userInfo.put(KEY_CHEST_SIZE, mChestSize);
+        userInfo.put(KEY_WAIST_SIZE, mWaistSize);
+        userInfo.put(KEY_BELLY_SIZE, mBellyCirumference);
+        userInfo.put(KEY_THIGH_SIZE, mThighGirth);
+        userInfo.put(KEY_FIRST_TIME_SIGNIN, FIRST_TIME_SIGNIN);
 
         mUserDb.set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 listenerRegistration.remove();
-                Intent intent = new Intent(EditUserInfo.this,MainActivity.class);
+                Intent intent = new Intent(EditUserInfo.this, MainActivity.class);
                 startActivity(intent);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(EditUserInfo.this,"error in storing data",Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditUserInfo.this, "error in storing data", Toast.LENGTH_SHORT).show();
             }
         });
     }
