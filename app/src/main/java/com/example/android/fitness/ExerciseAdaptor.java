@@ -66,6 +66,7 @@ public class ExerciseAdaptor extends ArrayAdapter<Exercise> {
                 .apply(options)
                 .into(currentImageView);
         currentTitle.setText(currentWorkOut.getTitle());
+        currentTitle.setSelected(true);
         currentTime.setText("Time Required: "+currentWorkOut.getTime());
         currentTargetMuscle.setText(currentWorkOut.getTargetMuscles());
         currentTargetMuscle.setSelected(true);

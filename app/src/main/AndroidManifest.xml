@@ -11,9 +11,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivty"></activity>
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".ExercisesListActivity" />
+        <activity android:name=".LoginActivty"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".RegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+        <activity android:name=".ExercisesListActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".ImageActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
@@ -24,13 +32,7 @@
             android:parentActivityName=".MainActivity" />
         <activity android:name=".UserInfoActivity" />
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

@@ -20,11 +20,15 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.L;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -84,6 +88,16 @@ public class UserInfoActivity extends AppCompatActivity {
     private CollectionReference mUsersData = db.collection("users");
     private DocumentReference mUserDb;
 
+    FirebaseAuth mAuth;
+    FirebaseAuth.AuthStateListener listener;
+    GoogleSignInClient mGoogleSignInClient;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(listener);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +106,26 @@ public class UserInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mUserId = intent.getStringExtra("uid");
         mUserDb = mUsersData.document(mUserId);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        listener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() == null)
+                {
+                    startActivity(new Intent(UserInfoActivity.this,RegisterActivity.class));
+                }
+            }
+        };
 
         mGenderSpinner = (Spinner)findViewById(R.id.spinner_gender);
         mFab = (FloatingActionButton) findViewById(R.id.fab_next);
@@ -356,8 +390,7 @@ public class UserInfoActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
                 Toast.makeText(UserInfoActivity.this,"Signing out",Toast.LENGTH_SHORT);
-                AuthUI.getInstance().signOut(this);
-                startActivity(new Intent(UserInfoActivity.this,MainActivity.class));
+                signOut();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -467,11 +500,12 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     public void signOut() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+       mAuth.signOut();
+       mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        // ...
+                        Toast.makeText(UserInfoActivity.this,"signing out",Toast.LENGTH_SHORT);
                     }
                 });
     }

@@ -28,7 +28,7 @@ public class ExercisesListActivity extends AppCompatActivity {
     private ExerciseAdaptor adapter;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference collectionReference = db.collection("exercises");
+    private CollectionReference collectionReference;
 
 
     private ArrayList<Exercise> exercises ;
@@ -37,9 +37,15 @@ public class ExercisesListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercises_list);
 
+        Intent intent = getIntent();
+        final String exercise = intent.getStringExtra("exercise");
+
+        collectionReference = db.collection(exercise);
+
         exercises = new ArrayList<Exercise>();
 
         listView = (ListView)findViewById(R.id.list_view);
+
 
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -70,7 +76,7 @@ public class ExercisesListActivity extends AppCompatActivity {
                 Exercise currentExercise = adapter.getItem(position);
                 Intent intent = new Intent(ExercisesListActivity.this,ImageActivity.class);
                 intent.putExtra("exercise_name",currentExercise.getTitle());
-                intent.putExtra("exercise_type","exercises");
+                intent.putExtra("exercise_type",exercise);
                 startActivity(intent);
             }
         });

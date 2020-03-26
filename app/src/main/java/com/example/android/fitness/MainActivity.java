@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,9 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,12 +30,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.storage.StorageReference;
+
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,11 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     public static final String ANONYMOUS = "anonymous";
 
-    private String mUsername;
-    private String mUserId;
 
     private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    FirebaseAuth.AuthStateListener listener;
+    GoogleSignInClient mGoogleSignInClient;
 
     private TextView mBmiTextView;
     private LottieAnimationView lottieAnimationView;
@@ -57,44 +54,110 @@ public class MainActivity extends AppCompatActivity {
     private double bmi;
     private static DecimalFormat df = new DecimalFormat("0.0");
     private Button mButton;
+    private Button mButton2;
+    private Button mButton3;
+    private Button mButton4;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFirebaseAuth.addAuthStateListener(listener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mUsername = ANONYMOUS;
+
+
 
         mBmiTextView = (TextView) findViewById(R.id.bmi);
         lottieAnimationView = (LottieAnimationView)findViewById(R.id.exercise);
         mWeightTextView = (TextView)findViewById(R.id.weight);
         mButton = (Button)findViewById(R.id.image_button);
+        mButton2 = (Button)findViewById(R.id.image_button2);
+        mButton3 = (Button)findViewById(R.id.image_button3);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        listener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-             FirebaseUser user = firebaseAuth.getCurrentUser();
-             if (user != null)
-             {
-                 mUserId = user.getUid();
-                 onSignedInInitialise(user.getDisplayName());
-             }
-             else
-             {
-                 onSignOutCleanUp();
-                 createSignInIntent();
-             }
+                if(firebaseAuth.getCurrentUser() == null)
+                {
+                    startActivity(new Intent(MainActivity.this,RegisterActivity.class));
+                }
             }
         };
-       mButton.setOnClickListener(new View.OnClickListener() {
+       FirebaseUser user = mFirebaseAuth.getCurrentUser();
+       String id = user.getUid();
+       DocumentReference reference = usersRef.document(id);
+       reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+           @Override
+           public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+               if (e == null) {
+                   if(documentSnapshot.exists())
+                   {
+                       if (documentSnapshot.getDouble("gender") == 1) {
+                           lottieAnimationView.setAnimation("man.json");
+                           lottieAnimationView.playAnimation();
+                       } else {
+                           lottieAnimationView.setAnimation("girl.json");
+                           lottieAnimationView.playAnimation();
+                       }
+                       double val = (documentSnapshot.getDouble("weight") )/ ((documentSnapshot.getDouble("height"))*(documentSnapshot.getDouble("height")));
+                       bmi = val * 10000.0;
+                       bmi = Math.round(bmi * 10D) / 10D;
+                       mBmiTextView.setText("Here's your BMI: " + bmi);
+                       checkBmi(bmi);
+                   }
+                   else
+                   {
+                       Toast.makeText(MainActivity.this,"some error in retrieving data",Toast.LENGTH_SHORT).show();
+                   }
+               }
+           }
+       });
+
+
+        mButton.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
               // startActivity(new Intent(MainActivity.this,ImageActivity.class));
-               startActivity(new Intent(MainActivity.this,ExercisesListActivity.class));
+               Intent intent = new Intent(MainActivity.this,ExercisesListActivity.class);
+               intent.putExtra("exercise","exercises");
+               startActivity(intent);
+
            }
        });
+        mButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // startActivity(new Intent(MainActivity.this,ImageActivity.class));
+                Intent intent = new Intent(MainActivity.this,ExercisesListActivity.class);
+                intent.putExtra("exercise","Body Building");
+                startActivity(intent);
+            }
+        });
+        mButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // startActivity(new Intent(MainActivity.this,ImageActivity.class));
+                Intent intent = new Intent(MainActivity.this,ExercisesListActivity.class);
+                intent.putExtra("exercise","Body Toning");
+                startActivity(intent);
+            }
+        });
+
 
     }
     @Override
@@ -126,171 +189,18 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mAuthStateListener != null) {
-            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-            if (resultCode == RESULT_OK) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(user != null)
-                {
-                    mUserId = user.getUid();
-
-                    DocumentReference docRef = usersRef.document(mUserId);
-                    docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                            if(e == null) {
-                                if (documentSnapshot.exists()) {
-                                    if (documentSnapshot.getDouble("gender") == 1) {
-                                        lottieAnimationView.setAnimation("man.json");
-                                        lottieAnimationView.playAnimation();
-                                    } else {
-                                        lottieAnimationView.setAnimation("girl.json");
-                                        lottieAnimationView.playAnimation();
-                                    }
-                                    double val = documentSnapshot.getDouble("weight") / (documentSnapshot.getDouble("height") * documentSnapshot.getDouble("height"));
-                                    bmi = val * 10000.0;
-                                    bmi = Math.round(bmi * 10D) / 10D;
-                                    mBmiTextView.setText("Here's your BMI: " + bmi);
-                                    checkBmi(bmi);
-                                    // mBmiTextView.setText(""+documentSnapshot.getDouble("weight")+documentSnapshot.getDouble("height"));
-                                }
-                                else
-                                {
-                                    Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
-                                    intent.putExtra("uid", mUserId);
-                                    startActivity(intent);
-                                }
-                            }
-
-                        }
-                    });
-                }
-            } else if (response == null) {
-                finish();
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-            }
-            else
-            {
-
-            }
-        }
-    }
-
-    public void createSignInIntent() {
-        // [START auth_fui_create_intent]
-        // Choose authentication providers
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build());
-
-        // Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setLogo(R.drawable.ic_launcher_background)
-                        .setIsSmartLockEnabled(false)
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
-        // [END auth_fui_create_intent]
-    }
 
     public void signOut() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                    }
-                });
-        // [END auth_fui_signout]
-    }
-
-    public void delete() {
-        // [START auth_fui_delete]
-        AuthUI.getInstance()
-                .delete(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+        mFirebaseAuth.signOut();
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        // ...
+                        Toast.makeText(MainActivity.this,"signed out",Toast.LENGTH_SHORT);
                     }
                 });
-        // [END auth_fui_delete]
     }
 
-    public void privacyAndTerms() {
-        List<AuthUI.IdpConfig> providers = Collections.emptyList();
-        // [START auth_fui_pp_tos]
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setTosAndPrivacyPolicyUrls(
-                                "https://example.com/terms.html",
-                                "https://example.com/privacy.html")
-                        .build(),
-                RC_SIGN_IN);
-        // [END auth_fui_pp_tos]
-    }
-
-    private void onSignedInInitialise(String username){
-        mUsername = username;
-        final DocumentReference docRef = usersRef.document(mUserId);
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(e == null)
-                {   if (documentSnapshot.exists()) {
-                    if (documentSnapshot.getDouble("gender") == 1) {
-                        lottieAnimationView.setAnimation("man.json");
-                        lottieAnimationView.playAnimation();
-                    } else {
-                        lottieAnimationView.setAnimation("girl.json");
-                        lottieAnimationView.playAnimation();
-                    }
-                    double val = documentSnapshot.getDouble("weight") / (documentSnapshot.getDouble("height") * documentSnapshot.getDouble("height"));
-                    bmi = val * 10000.0;
-                    bmi = Math.round(bmi * 10D) / 10D;
-                    mBmiTextView.setText("Here's your BMI: " + bmi);
-                    checkBmi(bmi);
-                    //mBmiTextView.setText(""+documentSnapshot.getDouble("weight")+documentSnapshot.getDouble("height"));
-                }
-                else
-                {
-                    Intent intent = new Intent(MainActivity.this,UserInfoActivity.class);
-                    intent.putExtra("uid",mUserId);
-                    startActivity(intent);
-                }
-            }
-
-            }
-        });
-
-    }
-
-    private void onSignOutCleanUp(){
-        mUsername = ANONYMOUS;
-    }
     private void checkBmi(double val)
     {
         if(val < 18.5d)

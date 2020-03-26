@@ -34,15 +34,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.1'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation 'com.google.firebase:firebase-database:19.2.1'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.squareup.okhttp3:okhttp:4.4.0'
-    implementation 'com.firebaseui:firebase-ui-database:6.2.0'
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     implementation 'com.firebaseui:firebase-ui-storage:6.2.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    implementation 'com.tomer:fadingtextview:2.5'
+    implementation 'com.google.android.gms:play-services-fitness:18.0.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 }
