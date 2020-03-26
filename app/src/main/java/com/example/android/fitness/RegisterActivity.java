@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mLoginPassword;
     private Button mSignIn;
 
+    private LinearLayout layout;
+
     private SignInButton mSignInGoogle;
     GoogleSignInClient mGoogleSignInClient;
 
@@ -89,6 +92,8 @@ public class RegisterActivity extends AppCompatActivity {
         mLoginEmail = (EditText) findViewById(R.id.login_email);
         mLoginPassword = (EditText) findViewById(R.id.login_password);
         mSignIn = (Button) findViewById(R.id.sign_in);
+
+        layout = (LinearLayout)findViewById(R.id.layout_login);
 
         mSignInGoogle = (SignInButton)findViewById(R.id.google_sign);
 

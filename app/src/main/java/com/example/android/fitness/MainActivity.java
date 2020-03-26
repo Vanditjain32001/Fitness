@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mButton;
     private Button mButton2;
     private Button mButton3;
-    private Button mButton4;
 
     @Override
     protected void onStart() {
@@ -203,15 +202,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkBmi(double val)
     {
-        if(val < 18.5d)
+        if(Double.compare(val,18.5d) < 0)
         {
             mWeightTextView.setText("RANGE : UNDERWEIGHT");
         }
-        else if(val>=18.5d || val<25.0d)
+        else if(Double.compare(val,18.5d)>=0 && Double.compare(val,25.0d)<0)
         {
             mWeightTextView.setText("RANGE : NORMAL");
         }
-        else if(val>=25.0d || val<=30.0d)
+        else if( Double.compare(val,25.0d)>=0 && Double.compare(val,30.0d)<0)
         {
             mWeightTextView.setText("RANGE : OVERWEIGHT");
         }

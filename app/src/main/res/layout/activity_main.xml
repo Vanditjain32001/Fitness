@@ -58,14 +58,6 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:id="@+id/image_button3"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Check out recommended workouts"
-        android:gravity="center"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:id="@+id/image_button4"/>
 
 
 </LinearLayout>
