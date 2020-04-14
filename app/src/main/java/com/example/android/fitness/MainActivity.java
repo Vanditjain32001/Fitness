@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getName();
     private static final int RC_SIGN_IN = 123;
     public static final String ANONYMOUS = "anonymous";
+    String exercise;
 
 
     private FirebaseAuth mFirebaseAuth;
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private static DecimalFormat df = new DecimalFormat("0.0");
     private Button mButton;
     private Button mButton2;
-    private Button mButton3;
 
     @Override
     protected void onStart() {
@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         mWeightTextView = (TextView)findViewById(R.id.weight);
         mButton = (Button)findViewById(R.id.image_button);
         mButton2 = (Button)findViewById(R.id.image_button2);
-        mButton3 = (Button)findViewById(R.id.image_button3);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -133,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
            public void onClick(View v) {
               // startActivity(new Intent(MainActivity.this,ImageActivity.class));
                Intent intent = new Intent(MainActivity.this,ExercisesListActivity.class);
-               intent.putExtra("exercise","exercises");
+               intent.putExtra("exercise",exercise);
                startActivity(intent);
 
            }
@@ -142,18 +141,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // startActivity(new Intent(MainActivity.this,ImageActivity.class));
-                Intent intent = new Intent(MainActivity.this,ExercisesListActivity.class);
+                /*Intent intent = new Intent(MainActivity.this,ExercisesListActivity.class);
                 intent.putExtra("exercise","Body Building");
-                startActivity(intent);
-            }
-        });
-        mButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // startActivity(new Intent(MainActivity.this,ImageActivity.class));
-                Intent intent = new Intent(MainActivity.this,ExercisesListActivity.class);
-                intent.putExtra("exercise","Body Toning");
-                startActivity(intent);
+                startActivity(intent);*/
+                startActivity(new Intent(MainActivity.this,WorkoutActivity.class));
             }
         });
 
@@ -205,18 +196,22 @@ public class MainActivity extends AppCompatActivity {
         if(Double.compare(val,18.5d) < 0)
         {
             mWeightTextView.setText("RANGE : UNDERWEIGHT");
+            exercise = "Body Building";
         }
         else if(Double.compare(val,18.5d)>=0 && Double.compare(val,25.0d)<0)
         {
             mWeightTextView.setText("RANGE : NORMAL");
+            exercise = "Body Toning";
         }
         else if( Double.compare(val,25.0d)>=0 && Double.compare(val,30.0d)<0)
         {
             mWeightTextView.setText("RANGE : OVERWEIGHT");
+            exercise = "exercises";
         }
         else
         {
             mWeightTextView.setText("RANGE : OBESE");
+            exercise = "exercises";
         }
     }
 }

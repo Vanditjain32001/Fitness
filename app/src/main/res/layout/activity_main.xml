@@ -38,6 +38,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Check out recommended workouts"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="#ffff"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
@@ -45,19 +51,15 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Check out recommended workouts"
+        android:text="Check out all workouts"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="#ffff"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:id="@+id/image_button2"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Check out recommended workouts"
-        android:gravity="center"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:id="@+id/image_button3"/>
 
 
 </LinearLayout>

@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">fitness</string>
     <string name="sign_out">Sign Out</string>
+    <string-array name="workouts">
+        <item>Cardio</item>
+        <item>Body Building</item>
+        <item>Body Toning</item>
+    </string-array>
+    <string name="title_activity_workouts">WorkoutsActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="title_activity_workout">WorkoutActivity</string>
 </resources>

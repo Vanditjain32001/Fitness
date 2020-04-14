@@ -1,6 +1,7 @@
 package com.example.android.fitness;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -37,16 +39,24 @@ public class ExercisesListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercises_list);
 
+
         Intent intent = getIntent();
         final String exercise = intent.getStringExtra("exercise");
+
+        if(exercise.equals("exercises")) {
+            getSupportActionBar().setTitle("Cardio");
+        }
+        else
+        {
+            getSupportActionBar().setTitle(exercise);
+        }
+
 
         collectionReference = db.collection(exercise);
 
         exercises = new ArrayList<Exercise>();
 
         listView = (ListView)findViewById(R.id.list_view);
-
-
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
