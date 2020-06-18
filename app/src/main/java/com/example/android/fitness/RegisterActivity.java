@@ -100,7 +100,6 @@ public class RegisterActivity extends AppCompatActivity {
         mSignUp = (Button) findViewById(R.id.sign_up);
 
         mAuth = FirebaseAuth.getInstance();
-        // Configure Google Sign In
 
         mSignUp.setEnabled(false);
         mSignIn.setEnabled(false);
@@ -110,7 +109,6 @@ public class RegisterActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
-        // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
           listener = new FirebaseAuth.AuthStateListener() {
             @Override

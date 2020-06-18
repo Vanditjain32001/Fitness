@@ -68,9 +68,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
         mBmiTextView = (TextView) findViewById(R.id.bmi);
         lottieAnimationView = (LottieAnimationView)findViewById(R.id.exercise);
         mWeightTextView = (TextView)findViewById(R.id.weight);
@@ -147,8 +144,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,WorkoutActivity.class));
             }
         });
-
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
